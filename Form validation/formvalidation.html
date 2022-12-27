@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    
+    <style>
+        body{
+            background-color: #3498db;
+            display: flex;   
+            justify-content: center;
+            align-items: center;
+            height: 100vh;  
+        }
+        .form-container{
+            background-color: antiquewhite;
+            padding: 30px;
+            text-align: center;
+        }
+       
+        h2{
+            margin: 0px 0px 10px 0px;
+        }
+        input{
+            width: 300px;
+            margin: 10px 0px;
+            padding: 10px;
+        }
+        .error{
+            color: red;
+            margin: 0px;
+            text-align: left;
+            width: 200px;
+        }
+        .btn{
+            width: 100px;
+            height: 50px;
+            color: aliceblue;
+            background-color: #3498db;
+            border: none;
+            font-size: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Login Form</h2>
+        <form action="http://localhost:5000/customers" name="myform" onsubmit="return validateform()"  >      <!--returning true or false gets passed to form's submit event and prevents or allow for submission if the value is true or false repectively.--> 
+            <input type="email" placeholder="email-id" id="emailid" required name="femail"><br>
+            <p id="emailerror" class="error"></p>
+            <input type="text" placeholder="name" pattern="^[a-zA-Z ]*$" required id="username" name="fname"><br>
+            <p id="usererror" class="error"></p>
+            <input type="number" placeholder="phone" required id="phone" name="fphone"><br>
+            <p id="phoneerror" class="error"></p>
+            <input type="password" placeholder="password" required id="password" name="fpassword"><br>
+            <p id="passworderror" class="error"></p>
+            <input type="address" placeholder="address" required id="address" name="faddress"><br>
+            <p id="addresserror" class="error"></p>
+            <input type="submit" class="btn" value="submit">
+        </form>
+    </div>
+    <script>
+
+        function clearErrors(){
+           errors = document.getElementsByClassName('error');   //copying all elements with classname 'error' into errors variable
+           for(let item of errors)             //for of loop - each copied element is passed into item variable one by one in a loop
+           {
+            item.innerHTML="";              //setting content of copied elements to "" i.e clearing the error text.
+           }                                         
+        }
+
+       function seterror(id,error){        //getting called from validate form function with two parameters
+         document.getElementById(id).innerHTML = error;   //this sets the concerned paragraph tag with error message
+       }
+
+       function validateform(){          //this function is getting called from form tag
+        var returnval = true;            //form will validate only when returnval is true
+        clearErrors();
+        var name = document.getElementById('username').value;
+        if(name.startsWith(" ")){
+            seterror("usererror","*name cannot start with a space");
+            returnval=false
+        }else if(name.endsWith(" ")){
+            seterror("usererror","*name cannot end with a space");
+            returnval=false
+        }   
+        var email = document.getElementById('emailid').value
+        if(email.length>50){
+            seterror("emailerror","*email is too long");
+            returnval=false;
+        }
+        var phone = document.getElementById('phone').value
+        if(phone.length!=10){
+            seterror("phoneerror","*phone number should be of 10 digits only");
+            returnval=false;
+        }
+        var password = document.getElementById('password').value
+        if(password.length<7 || password.length>20){
+            seterror("passworderror","*password should contain atleast 7 characters and not more than 20 characters");
+            returnval=false;
+        }
+        else if(password.search(/[0-9]/)==-1){     //the search method matches a string against a regular expression and returns the index of the first match or returns -1 if no match is found.
+            seterror("passworderror","*password should contain atleast one numeric value");
+            returnval=false;
+        }
+        else if(password.search(/[A-Z]/)==-1){
+            seterror("passworderror","*password should contain atleast one uppercase letter");
+            returnval=false;
+        }
+        else if(password.search(/[a-z]/)==-1){
+            seterror("passworderror","*password should contain atleast one lowercase letter");
+            returnval=false;
+        }
+        else if(password.search(/[!\@\#\$\^\&\*]/)==-1){      //to match a character having special meaning in regex use one need to use the escape sequence after each special character.
+            seterror("passworderror","*password should contain atleast one special character");
+            returnval=false;
+        }
+        var address = document.getElementById('address').value
+        console.log(address)
+        if(address.length<10){
+            seterror("addresserror","*address can't be less than 10 characters");
+            returnval=false;
+        }
+
+
+
+
+        return returnval;
+       }
+    </script>
+</body>
+</html>
